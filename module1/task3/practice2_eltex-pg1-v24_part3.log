@@ -27,3 +27,17 @@ git commit -m "tasks from module 1 (task3 WIP)"
 git push
 mkdir ~/eltex-syspro_clone && cd ~/eltex-syspro_clone/
 git clone https://github.com/ikadzev/eltex-syspro.git .
+*changed practice2_eltex-pg1-v24_part3.log*
+git add .
+git commit -m "changed task3"
+git push
+cd ~/eltex-syspro_clone
+git fetch
+git log origin/main
+git diff main origin/main
+git pull
+<future commands -
+git add .
+git commit -m "done task3"
+git push
+>
