@@ -1,0 +1,18 @@
+mkdir -p D1/D2/D3
+touch D1/D2/file.txt
+echo 'произвольный текст' >> D1/D2/file.txt
+ln D1/D2/file.txt D1/D2/D3/hard.txt
+cd D1/D2/D3
+ln -s ../file.txt soft.txt
+cat soft.txt hard.txt
+stat hard.txt
+stat soft.txt
+mv ../file.txt ../../
+cat hard.txt soft.txt
+cd
+rm -rf D1/D2
+find / -type f -size +20M 2>/dev/null > eltex-pg1-v24_part3_gt50M.log
+find ~ -type f -atime -1
+find / -type f -name find 2>/dev/null
+file /usr/bin/find
+file /boot/initrd.img*

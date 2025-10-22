@@ -1,0 +1,40 @@
+journalctl -b -o short-unix | awk '
+BEGIN {limit = 20}
+{
+    if (!start) start = $1
+    if ($1 - start <= limit) print
+    else exit
+}'
+awk '{sub(:, , ); print , substr(-bash, index(-bash,))}' /var/log/auth.log | sed 's/\[[0-9]*\]//' | sort
+awk '{sub(:, , ); print , substr(-bash, index(-bash,))}' /var/log/auth.log | sed 's/\[[0-9]*\]//' | awk '{count[]++} END {for (src in count) print count[src], src}' | sort -nr
+awk -F: '
+    FNR==NR {
+        for (i=1; i<=NF; i++) {
+            if (i==4 && $4 != "")
+                n=split($4, users, ",");
+            else
+                n=0;
+            for (j=1; j<=n; j++)
+                groups[users[j]] = (groups[users[j]] ? groups[users[j]] "," $1 : $1);
+        }
+        next;
+    }
+
+    $7=="/usr/sbin/nologin" {
+        print $3 "," $1 "," (groups[$1] ? groups[$1] : "-");
+    }
+' /etc/group /etc/passwd | sort -nr
+
+dmesg | grep 'kernel'
+awk 'END {print NR}' /var/log/kern.log
+awk '
+/^Start-Date:/ { start = substr($0, 13) }
+/^Commandline:/ { cmd = substr($0, 14) }
+/^End-Date:/ {
+    end = substr($0, 11)
+    if (cmd && start && end)
+        print "Commandline: " cmd " ; Start-Date: " start " ; End-Date: " end
+    cmd = start = end = ""
+}
+' /var/log/apt/history.log
+

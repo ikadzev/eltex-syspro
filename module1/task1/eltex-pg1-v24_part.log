@@ -1,0 +1,11 @@
+echo $HISTFILESIZE
+ls -a | grep '^\.'
+HISTTIMEFORMAT="%F %T "
+PROMPT_COMMAND='history -a; history -c; history -r'
+DATE=$(date +"%d.%m.%y")
+TIME=$(date +"%H:%M:%S")
+DATE_TIME="$DATE $TIME"
+ls /bin /sbin | grep [0-9]
+PS1='$USER@$HOSTNAME-$(date +"%H:%M")> '
+PS1="$PS1" bash --norc
+mkdir $(date +%Y)-{01..12}
