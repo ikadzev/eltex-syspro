@@ -1,3 +1,29 @@
 git config --global user.name 'ikadzev'
 git config --global user.email 'ikadzev@mail.ru'
 git config --global init.defaultBranch main
+apt update
+apt install git gh
+ssh-keygen -t ed25519 -f .ssh/ika_gh_auth_key
+gh auth login
+gh auth setup-git --hostname github.com
+gh auth status
+gh repo create --public eltex-syspro
+mkdir eltex-syspro && cd eltex-syspro
+echo "# Tasks from System-Programming Eltex School" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/ikadzev/eltex-syspro.git
+git status
+git push -u origin main
+mkdir -p module1/task1
+mkdir module1/task2
+mkdir module1/task3
+scp...
+git add .
+git status
+git commit -m "tasks from module 1 (task3 WIP)"
+git push
+mkdir ~/eltex-syspro_clone && cd ~/eltex-syspro_clone/
+git clone https://github.com/ikadzev/eltex-syspro.git .
