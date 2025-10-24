@@ -1,0 +1,115 @@
+ssh-keygen
+ssh-copy-id root@172.16.9.198
+scp root@172.16.9.198:~/.ssh/authorized_keys ~/server_auth_keys
+diff .ssh/*.pub server_auth_keys
+ls -l .ssh/
+ssh root@172.16.9.198
+ls -l .ssh/
+useradd -m -s /bin/bash -p user1_password user1
+adduser user2
+adduser user3
+usermod -s /usr/sbin/nologin user3
+su user3
+su user3 -s /bin/bash
+exit
+adduser user1 user_group
+adduser user2 user_group
+adduser user3 user_group
+cat /etc/group | grep 'user*'
+mkdir /opt/share
+chown :user_group /opt/share
+chmod g+rwx /opt/share
+vim /home/user1/.profile
+*change #umask=0022 to umask=0004*
+touch /opt/share/root{1..3}
+su user1
+touch /opt/share/user1{1..3}
+exit
+su user2
+touch /opt/share/user2{1..3}
+exit
+su user3 -s /bin/bash
+touch /opt/share/user3{1..3}
+exit
+rm /opt/share/user{1..3}1
+su user1
+rm /opt/share/root1
+rm /opt/share/user{2..3}2
+exit
+su user2
+rm /opt/share/root2
+rm /opt/share/user12
+rm /opt/share/user33
+exit
+su user3 -s /bin/bash
+rm /opt/share/*
+exit
+ls /opt/share
+chmod +t /opt/share
+touch /opt/share/root
+su user1
+touch /opt/share/user1
+exit
+su user2
+touch /opt/share/user2
+exit
+su user3 -s /bin/bash
+touch /opt/share/user3
+rm /opt/share/root /opt/share/user{1..2}
+exit
+su user2
+rm /opt/share/root /opt/share/user1 /opt/share/user3
+exit
+su user1
+rm /opt/share/root /opt/share/user{2..3}
+exit
+rm /opt/share/*
+ls /opt/share
+vim /etc/sudoers.d/user1
+user1 ALL=(root) /bin/dmesg
+<:wq>
+su user1
+dmesg
+sudo dmesg
+exit
+<script is unable to launch dmesg from user2 even with SUID from root>
+<making c wrapper>
+vim c_wrapper.c
+	#include <stdlib.h>
+	#include <unistd.h>
+
+	int main(int argc, char *argv[]) {
+    		clearenv()
+    		char **a = malloc((argc + 1) * sizeof(char*));
+    		if (!a) return 1;
+   	 	a[0] = "/bin/dmesg";
+   	 	for (int i = 1; i < argc; ++i) a[i] = argv[i];
+   	 	a[argc] = NULL;
+   	 	execv("/bin/dmesg", a);
+   	 	return 1;
+	}
+<:wq>
+gcc c_wrapper.c -o c_wrapper
+chmod u+s c_wrapper
+mv c_wrapper /home/user2/
+su user2
+~/c_wrapper
+exit
+chage -M 10 user1
+chage -M 10 user2
+chage -M 10 user3
+rcync -a /etc/ /root/etc_backup/
+tar -czvf etc_backup_gzip.tar.gz etc_backup
+tar -cjvf etc_backup_bzip2.tar.bz2 etc_backup
+tar cvf - etc_backup | 7z a -si etc_backup.tar.7z
+ls -l
+vim /etc/motd ... <:wq>
+rsync -a /etc/ etc_backup/
+tar -czf etc_backup_gzip.tar.gz etc_backup
+tar -df etc_backup_bzip2.tar.bz2 etc_backup
+mkdir etc_backup_7zip
+mkdir etc_backup_gzip
+tar -xvf etc_backup_gzip.tar.gz -C etc_backup_gzip
+7z e etc_backup.tar.7z
+tar -xvf etc_backup.tar -C etc_backup_7zip
+diff etc_backup_gzip/etc_backup/motd etc_backup_7zip/etc_backup/motd
