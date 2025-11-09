@@ -40,7 +40,7 @@ void modify_mode(mode_t *mode, const char *cmd) {
             case '=': set = 3; break;
     }
     mode_t priv = 0;
-    while (*cmd != '\0' || *cmd != ' ') {
+    while (*cmd != '\0' && *cmd != ' ') {
         switch (*cmd++) {
             case 'r': priv |= S_IRUSR | S_IRGRP | S_IROTH; break;
             case 'w': priv |= S_IWUSR | S_IWGRP | S_IWOTH; break;
@@ -55,41 +55,59 @@ void modify_mode(mode_t *mode, const char *cmd) {
 int main(int argc, char *argv[]) {
 
     mode_t mode = 0;
+    char* mode_str;
+    int mode_set = 0;
     struct stat st;
     const char *file = NULL;
 
     if (argc == 1) {
         printf("Usage:\n"
-                "  %s -n [num_mask] [FILE]\n"
-                "  %s -s [sym_mask] [FILE]\n"
-                "  %s [FILE]\n", argv[0], argv[0], argv[0]);
+                "./main -n [num] [FILE]\n"
+                "./main -s [str] [FILE]\n"
+                "./main [FILE]\n");
         return 0;
-    } 
-    else if (argc == 2) {
-        if (argv[1][0] == '-') {
-            printf("Wrong argument!\n");
-            return 1;
+    }
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-n") == 0) {
+            if (mode_set) {
+                printf("Too many args!\n");
+                return 1;
+            }
+            if (i == argc - 1) {
+                printf("Where numbers?!\n");
+                return 1;
+            }
+            mode = strtol(argv[++i], NULL, 8) & 0b111111111;
+            mode_set = 1;
+            continue;
+        } else if (strcmp(argv[i], "-s") == 0) {
+            if (mode_set) {
+                printf("Too many args!\n");
+                return 1;
+            }
+            if (i == argc - 1) {
+                printf("Where stirng?!\n");
+                return 1;
+            }
+            mode_str = argv[++i];
+            mode_set = 2;
+            continue;
+        } else {
+            file = argv[i];
+            continue;
         }
-        file = argv[1];
+    }
+
+    if (file && (mode_set != 1)) {
         if (stat(file, &st) == -1) {
-            perror("stat");
+            printf("stat");
             return 1;
         }
         mode = st.st_mode & 0777;
-    } 
-    else if (argc >= 3) {
-        file = argv[3];
-        if (strcmp(argv[1], "-n") == 0) {
-            mode = strtol(argv[2], NULL, 8);
-        } 
-        else if (strcmp(argv[1], "-s") == 0) {
-            if (stat(file, &st) == -1) {
-                perror("stat");
-                return 1;
-            }
-            mode = st.st_mode & 0777;
-            modify_mode(&mode, argv[2]);
-        }
+    }
+    if (mode_set == 2) {
+        modify_mode(&mode, mode_str);
     }
 
     if (file)
