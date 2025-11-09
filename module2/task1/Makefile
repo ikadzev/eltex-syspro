@@ -1,6 +1,5 @@
 all:
-	gcc main.c -o main
+	gcc main.c phonebook.c -o main
 	./main
-
 clear:
 	rm main
