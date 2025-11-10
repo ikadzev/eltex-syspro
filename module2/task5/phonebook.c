@@ -147,3 +147,15 @@ int deletePB(PhoneBook* book, int ident) {
     book->count--;
     return ident;
 }
+
+void freePB(PhoneBook* book) {
+    if (book->count == 0) return;
+    AllocEntry* cur = book->firstEntry;
+    AllocEntry* temp;
+    for (int i = 0; i < book->count; i++) {
+        temp = cur->next;
+        free(cur);
+        cur = temp;
+    }
+    return;
+}

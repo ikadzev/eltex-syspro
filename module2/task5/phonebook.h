@@ -62,5 +62,6 @@ int addPB(PhoneBook* book, const char* name, const char* surname);
 int editPB(PhoneBook* book, int ident, char* args, ...);
 int deletePB(PhoneBook* book, int ident);
 int entryPB(PhoneBook* book, const char* filter, int* found_indices);
+void freePB(PhoneBook* book);
 
 #endif // PHONEBOOK_H

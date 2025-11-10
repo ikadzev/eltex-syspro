@@ -276,6 +276,7 @@ int mainLoop(PhoneBook* book) {
         } else if (strcmp(token, "entry") == 0) {
             entryCLI(args, book);
         } else if(strcmp(token, "exit") == 0) {
+            freePB(book);
             break;
         } else {
             printf("Unknown command\nUsage: add edit delete entry exit\n");
