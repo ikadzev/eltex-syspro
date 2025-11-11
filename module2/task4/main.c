@@ -46,16 +46,17 @@ int main(int argc, char *argv[]) {
 
     char mask_ip[16];
     uint_to_ip_str(netmask, mask_ip);
+    srand((unsigned)time(NULL));
 
     for (int i = 0; i < N; i++) {
-        uint32_t random_ip = (uint32_t)rand() << 16 | rand();
+        uint32_t random_ip = ((uint32_t)rand() << 16) | (rand() & 0xFFFF);
         char ip_str[16];
         uint_to_ip_str(random_ip, ip_str);
 
         int same_subnet = ((random_ip & netmask) == network);
         if (same_subnet) local_count++; else external_count++;
 
-        if (same_subnet) printf("Packet %3d -> %-15s\n", i + 1, ip_str);
+        // if (same_subnet) printf("Packet %3d -> %-15s\n", i + 1, ip_str);
     }
     printf("Packets: %d\n", N);
     printf("in own network: %d (%.2f%%)\n", local_count, 100.0 * local_count / N);
