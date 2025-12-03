@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-// Constants used in phonebook.c
 #define MAXSTRING 100
 #define MAXEMAIL 10
 #define MAXPHONE 10
@@ -18,7 +17,6 @@
 #define NO_ENTRY -4
 #define UNKNOWN_EXPRESSION -5
 
-// Types used in phonebook.c
 typedef struct IM {
     char TG[MAXSTRING];
     char WA[MAXSTRING];
@@ -50,6 +48,7 @@ typedef struct PhoneBook {
     int count;
     AllocEntry* firstEntry;
     AllocEntry* lastEntry;
+    int nextIdent;
 } PhoneBook;
 
 AllocEntry* allocNewEntry(PhoneBook* book);
