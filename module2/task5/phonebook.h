@@ -51,11 +51,11 @@ typedef struct PhoneBook {
     int nextIdent;
 } PhoneBook;
 
-AllocEntry* allocNewEntry(PhoneBook* book);
+static void insertSorted(PhoneBook* book, AllocEntry* node);
+static void detach(PhoneBook* book, AllocEntry* node);
 int getCount(const PhoneBook* book);
 Entry getEntry(PhoneBook* book, int ident);
-AllocEntry* getAE(PhoneBook* book, int ident);
-int checkIdent(PhoneBook* book, int ident);
+static AllocEntry* findById(PhoneBook* book, int ident);
 
 int addPB(PhoneBook* book, const char* name, const char* surname);
 int editPB(PhoneBook* book, int ident, char* args, ...);
