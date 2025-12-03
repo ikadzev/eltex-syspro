@@ -5,6 +5,8 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#define SEM "/sem"
+#define SEM_CHECK "/sem_check"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -14,13 +16,9 @@ int main(int argc, char *argv[]) {
 
     char *filename = argv[1];
 
-    char sem_name[256];
-    snprintf(sem_name, sizeof(sem_name), "/sem_%s", filename);
-    for (char *p = sem_name; *p; p++) {
-        if (*p == '/' || *p == '.') *p = '_';
-    }
-
-    sem_t *sem = sem_open(sem_name, 0);
+    sem_t *sem = sem_open(SEM, 0);
+    sem_t *check = sem_open(SEM_CHECK, 0);
+    
     if (sem == SEM_FAILED) {
         perror("sem_open");
         return 1;
@@ -29,6 +27,7 @@ int main(int argc, char *argv[]) {
     char line[1024];
 
     while (1) {
+        sem_wait(check);
         sem_wait(sem);
 
         FILE *f = fopen(filename, "r+");
@@ -57,7 +56,7 @@ int main(int argc, char *argv[]) {
             x = atoi(p);
             if (x < min) min = x;
             if (x > max) max = x;
-            p = strtok(NULL, " ");
+            p = strtok(NULL, " \n");
         }
 
         printf("min=%d max=%d\n", min, max);

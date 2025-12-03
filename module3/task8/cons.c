@@ -11,8 +11,8 @@ void sem_wait(int semid) {
 }
 
 void sem_signal(int semid) {
-    struct sembuf op = {0, +1, 0};
-    semop(semid, &op, 1);
+    struct sembuf op[2] = {{0, 0, 0}, {0, 1, 0}};
+    semop(semid, op, 2);
 }
 
 void V(int semid) {
@@ -63,12 +63,12 @@ int main(int argc, char *argv[]) {
         sem_signal(semid);
 
         int min = 99999, max = -99999, x;
-        char *p = strtok(line, " ");
+        char *p = strtok(line, " \n");
         while (p) {
             x = atoi(p);
             if (x < min) min = x;
             if (x > max) max = x;
-            p = strtok(NULL, " ");
+            p = strtok(NULL, " \n");
         }
 
         printf("min=%d max=%d\n", min, max);

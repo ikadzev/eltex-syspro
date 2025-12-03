@@ -25,10 +25,10 @@ int main() {
     shmid = shmget(key, sizeof(shm_t), 0666);
     shm = (shm_t*) shmat(shmid, NULL, 0);
 
-    semid = semget(key, 2, 0666);
+    semid = semget(key, 1, 0666);
 
     while (1) {
-        sem_op(semid, 1, -1);  // P(1)
+        sem_op(semid, 0, -1);  // P(1)
 
         int min = shm->data[0];
         int max = shm->data[0];

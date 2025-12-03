@@ -18,7 +18,7 @@ int shmid, semid;
 shm_t *shm;
 pid_t child_pid;
 
-volatile sig_atomic_t sets_processed = 0;
+int sets_processed = 0;
 
 void parent_cleanup(int sig) {
     printf("\nОбработано наборов: %d\n", sets_processed);
@@ -40,10 +40,9 @@ int main() {
     shmid = shmget(key, sizeof(shm_t), 0666 | IPC_CREAT);
     shm = (shm_t*) shmat(shmid, NULL, 0);
 
-    semid = semget(key, 2, 0666 | IPC_CREAT);
+    semid = semget(key, 1, 0666 | IPC_CREAT);
 
     semctl(semid, 0, SETVAL, 0);
-    semctl(semid, 1, SETVAL, 0);
 
     signal(SIGINT, parent_cleanup);
 
@@ -62,13 +61,13 @@ int main() {
         for (int i = 0; i < n; i++)
             shm->data[i] = rand() % 100;
 
-        sem_op(semid, 1, 1);   // V(1)
-        sem_op(semid, 0, -1);  // P(0)
+        sem_op(semid, 0, 1);   // V(1)
 
         printf("min = %d, max = %d\n", shm->min_val, shm->max_val);
         sets_processed++;
 
         sleep(1);
+        sem_op(semid, 0, -1);
     }
 
     return 0;

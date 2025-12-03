@@ -13,8 +13,8 @@ void sem_wait(int semid) {
 }
 
 void sem_signal(int semid) {
-    struct sembuf op = {0, +1, 0};
-    semop(semid, &op, 1);
+    struct sembuf op[2] = {{0, 0, 0}, {0, 1, 0}};
+    semop(semid, op, 2);
 }
 
 void V(int semid) {

@@ -6,6 +6,8 @@
 #include <string.h>
 #include <semaphore.h>
 #include <sys/stat.h>
+#define SEM "/sem"
+#define SEM_CHECK "/sem_check"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -15,23 +17,16 @@ int main(int argc, char *argv[]) {
 
     char *filename = argv[1];
 
-    char sem_name[256];
-    snprintf(sem_name, sizeof(sem_name), "/sem_%s", filename);
-    for (char *p = sem_name; *p; p++) {
-        if (*p == '/' || *p == '.') *p = '_';
-    }
 
-    sem_t *sem = sem_open(sem_name, O_CREAT, 0666, 1);
+    sem_t *sem = sem_open(SEM, O_CREAT, 0666, 0);
+    sem_t *check = sem_open(SEM_CHECK, O_CREAT, 0666, 0);
+    
     if (sem == SEM_FAILED) {
         perror("sem_open");
         return 1;
     }
 
-    srand(time(NULL) ^ getpid());
-
     while (1) {
-        sem_wait(sem);
-
         FILE *f = fopen(filename, "a");
         if (!f) { perror("fopen"); exit(1); }
 
@@ -43,8 +38,9 @@ int main(int argc, char *argv[]) {
         fclose(f);
 
         sem_post(sem);
-
+        sem_post(check);
         sleep(1);
+        sem_wait(sem);
     }
 
     sem_close(sem);
