@@ -4,7 +4,6 @@
 #include <linux/sched.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
-// #define N 128 
 
 static int len,temp;
 static char *msg;
@@ -33,7 +32,7 @@ static const struct proc_ops proc_fops = {
     proc_write: write_proc,
 };
  
-static void create_new_proc_entry(void) { //use of void for no arguments is compulsory now
+static void create_new_proc_entry(void) {
     proc_create("hello", 0, NULL, &proc_fops);
     msg = kmalloc(N * sizeof(char), GFP_KERNEL);
 }
